@@ -21,16 +21,22 @@ function findById(id) {
   return db('posts').where({ id: Number(id) });
 }
 
+// Modified this to return the new post document
 function insert(post) {
   return db('posts')
     .insert(post)
-    .then(ids => ({ id: ids[0] }));
+    .then(ids => ({ id: ids[0], post }));
 }
 
 function update(id, post) {
   return db('posts')
     .where('id', Number(id))
-    .update(post);
+    .update(post)
+    .then(() => {
+      return db('posts')
+      .where('id', Number(id))
+    }
+    )
 }
 
 function remove(id) {
@@ -53,6 +59,7 @@ function findCommentById(id) {
     .where('comments.id', id);
 }
 
+// Modified this to return the new comment document
 function insertComment(comment) {
-  return db('comments').insert(comment).then(ids => ({ id: ids[0] }));
+  return db('comments').insert(comment).then(ids => ({ id: ids[0], comment }));
 }
